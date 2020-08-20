@@ -7,34 +7,26 @@ class Mesher():
 
     def __init__(self,  problem):
         self.mesh_domains( problem)
-        # self.initialize_empty_field(problem)
         self.initialize_fields(problem)
-# 
-    def mesh_domains(self, problem):
-        self.meshes = []
-        for domain in problem.domains:
-            self.meshes.append( Mesh(domain) )
 
-           
-            
+    def mesh_domains(self, problem):
+        self.meshes = {}
+        X = []
+        Y = []
+        for domain in problem.domains:
+            self.meshes[domain.name] = ( Mesh(domain) )
+            for elem in self.meshes[domain.name].X:
+                X.append(elem)
+            for elem in self.meshes[domain.name].Y:
+                Y.append(elem)
+        X.sort() ; Y.sort()
+        self.X = list(set(X))
+        self.Y = list(set(Y))
+        self.M = np.zeros( (len(self.X), len(self.Y)) )
+        
+
     def initialize_fields(self, problem):
-        for i, domain in enumerate(problem.domains):
-            # if domain.name == "Bottom Plate":
-            self.meshes[i].fields = []
-            for field in problem.required_fields:
-                if field == "Temperature":
-                    variable = domain.initial_temperature
-                    self.meshes[i].fields.append(Field(field, variable, domain))
-                elif field == "Thermal Conductivity X":
-                    variable = domain.material["Thermal Conductivity X"]
-                    self.meshes[i].fields.append(Field(field, variable, domain))
-                elif field == "Thermal Conductivity Y":
-                    variable = domain.material["Thermal Conductivity Y"]
-                    self.meshes[i].fields.append(Field(field, variable, domain))
-                elif field == "Density":
-                    variable = domain.material["Density"]
-                    self.meshes[i].fields.append(Field(field, variable, domain))
-                elif field == "Specific Heat":
-                    variable = domain.material["Specific Heat"]
-                    self.meshes[i].fields.append(Field(field, variable, domain))
-                
+        self.fields = {}
+        for field_ in problem.required_fields:
+            self.fields[field_] = Field(field_, self.M, problem)
+        import pdb; pdb.set_trace()
