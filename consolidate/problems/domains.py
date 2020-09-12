@@ -20,8 +20,10 @@ class RectangularDomain:
         self.position = position
         # import pdb; pdb.set_trace()
 
+
     def test(self, point):
-        if point[0] >= self.x0 and point[0] <= self.x1 and point[1] >= self.y0 and point[1] <= self.y1:
+
+        if self.x0 <= point[0] <= self.x1 and self.y0 <= point[1] <= self.y1:
             return True
         else:
             return False
