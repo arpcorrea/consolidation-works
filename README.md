@@ -1,4 +1,4 @@
-# The problem
+# The problem - 
 
 
 A plate with dimensions X and Y are defined by the user in ["Geometry"]["Length X"]["Length Y"]
