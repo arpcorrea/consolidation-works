@@ -39,6 +39,13 @@ class RectangularDomain:
         return False
 
     def test_mesh(self, mesh) -> bool:
+        """
+        Returns True if (mesh[0], mesh[1]) is on or within the rectangular domain boundary
+        defined by (self.ey0, self.ey1, self.ex0, self.ex1), False otherwise.
+
+        :param mesh:
+        :return: bool
+        """
         # import pdb; pdb.set_trace()
         if self.ey0 <= mesh[0] <= self.ey1 and self.ex0 <= mesh[1] <= self.ex1:
             # import pdb; pdb.set_trace()
