@@ -27,9 +27,8 @@ class RectangularDomain:
 
     def test(self, point) -> bool:
         """
-        Returns:
-         True if (Point[0], Point[1]) is on or within the rectangular domain boundary.
-         False if (Point[0], Point[1] is outside rectangular domain boundary
+        Returns True if (Point[0], Point[1]) is on or within the rectangular domain boundary,
+        False otherwise.
 
         :param point: (x-coordinate, y-coordinate)
         :return: bool
@@ -39,13 +38,13 @@ class RectangularDomain:
             return True
         return False
 
-    def test_mesh(self, mesh):
+    def test_mesh(self, mesh) -> bool:
         # import pdb; pdb.set_trace()
         if self.ey0 <= mesh[0] <= self.ey1 and self.ex0 <= mesh[1] <= self.ex1:
             # import pdb; pdb.set_trace()
             return True
-        else:
-            return False
+
+        return False
 
     def set_field_init_value(self, field_dict):
         for key, value in field_dict.items():
