@@ -3,12 +3,14 @@ import numpy as np
 
 class RectangularDomain:
 
-    def __init__(self, name, corner0, corner1, ex0, ex1, ey0, ey1, position, material, initialcondition, boundarycond,
-                 mesh):
+    def __init__(self, name, corner0, corner1, ex0, ex1, ey0, ey1, position, material,
+                 initialcondition, boundarycond, mesh):
+        # Rectangular domain boundaries
         self.x0 = float(corner0[0])
         self.y0 = float(corner0[1])
         self.x1 = float(corner1[0])
         self.y1 = float(corner1[1])
+        # Lengths
         self.Lx = self.x1 - self.x0
         self.Ly = self.y1 - self.y0
         self.name = name
@@ -23,12 +25,19 @@ class RectangularDomain:
         self.position = position
         # import pdb; pdb.set_trace()
 
-    def test(self, point):
+    def test(self, point) -> bool:
+        """
+        Returns:
+         True if (Point[0], Point[1]) is on or within the rectangular domain boundary.
+         False if (Point[0], Point[1] is outside rectangular domain boundary
+
+        :param point: (x-coordinate, y-coordinate)
+        :return: bool
+        """
 
         if self.x0 <= point[0] <= self.x1 and self.y0 <= point[1] <= self.y1:
             return True
-        else:
-            return False
+        return False
 
     def test_mesh(self, mesh):
         # import pdb; pdb.set_trace()
