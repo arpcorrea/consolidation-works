@@ -5,8 +5,9 @@ from .boundaryconditions import LinearBC
 class TwoPlates:
 
     def __init__(self, deck):
-        self.required_fields = ["Initial Temperature", "Thermal Conductivity X", "Thermal Conductivity Y", "Density",
-                                "Specific Heat", "Input Power Density", "dx", "dy", "External Temperature"]
+        self.required_fields = ["Initial Temperature", "Thermal Conductivity X",
+                                "Thermal Conductivity Y", "Density", "Specific Heat",
+                                "Input Power Density", "dx", "dy", "External Temperature"]
         self.set_simulation_parameters(deck)
         self.set_problem_parameters(deck)
         self.set_domains2(deck)
@@ -14,6 +15,8 @@ class TwoPlates:
         # self.set_boundaryconds(deck)
 
     def set_simulation_parameters(self, deck):
+        # There are a lot of self.XXX attributes which could be moved to the __init__ method. Is
+        # there a reason for this, or am I okay to move them?
         self.SimulationParameters = {}
         for par in deck.doc["Simulation"]:
             self.SimulationParameters[par] = deck.doc["Simulation"][par]
@@ -89,8 +92,8 @@ class TwoPlates:
                     boundarycond[bc].update({edge: bc_edge[edge]})
 
             self.domains.append(
-                RectangularDomain(deck_domain, corner0, corner1, ele_x0, ele_x1, ele_y0, ele_y1, position, material,
-                                  initialcond, boundarycond, mesh))
+                RectangularDomain(deck_domain, corner0, corner1, ele_x0, ele_x1, ele_y0, ele_y1,
+                                  position, material, initialcond, boundarycond, mesh))
 
     def set_initialconds(self, deck):
         for domain in self.domains:

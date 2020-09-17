@@ -3,7 +3,7 @@ import numpy as np
 
 class RectangularDomain:
 
-    def __init__(self, name, corner0, corner1, ex0, ex1, ey0, ey1, position, material,
+    def __init__(self, name, corner0: tuple, corner1, ex0, ex1, ey0, ey1, position, material,
                  initialcondition, boundarycond, mesh):
         # Rectangular domain boundaries
         self.x0 = float(corner0[0])
