@@ -14,16 +14,19 @@ Domains:
         Mesh:
             Number of Elements in X: 10
             Number of Elements in Y: 10
-        Boundary Condition:
-            Left Edge:
-                Temperature: 3
-            Top Edge:
-                Temperature: 3
-            Right Edge:
-                Temperature: 3
-            Bottom Edge:
-                Horizontal asperity ratio: 3
-                Vertical asperity ratio: 3
+        External Boundary Condition:
+            External Temperature:
+                Left Edge: 
+                    Temperature: 30
+                Top Edge: 
+                    Temperature: 31
+                Right Edge:
+                    Temperature: 32
+        Internal Boundary Condition:
+            Intimate Contact:
+                Bottom Edge:
+                    Horizontal asperity ratio: 3
+                    Vertical asperity ratio: 3
         Initial Condition:
             Initial Temperature: 3
         
@@ -40,16 +43,19 @@ Domains:
         Mesh:
             Number of Elements in X: 10
             Number of Elements in Y: 10
-        Boundary Condition:
-            Left Edge:
-                Temperature: 1
-            Bottom Edge:
-                Temperature: 1
-            Right Edge:
-                Temperature: 1 
-            Top Edge:
-                Horizontal asperity ratio: 1
-                Vertical asperity ratio: 1
+        External Boundary Condition:
+            External Temperature:
+                Left Edge:
+                    Temperature: 10
+                Bottom Edge:
+                    Temperature: 11
+                Right Edge:
+                    Temperature: 12
+        Internal Boundary Condition:
+            Intimate Contact:
+                Top Edge:
+                    Horizontal asperity ratio: 1
+                    Vertical asperity ratio: 1
         Initial Condition: 
             Initial Temperature: 1
         
@@ -66,13 +72,20 @@ Domains:
         Mesh:
             Number of Elements in X: 10
             Number of Elements in Y: 1
-        Boundary Condition:                
-            Top Edge:
-                Horizontal asperity ratio: 2
-                Vertical asperity ratio: 2
-            Bottom Edge:
-                Horizontal asperity ratio: 2
-                Vertical asperity ratio: 2
+        External Boundary Condition:  
+            External Temperature:
+                Right Edge:
+                    Temperature: 50
+                Left Edge:
+                    Temperature: 51
+        Internal Boundary Condition:
+            Intimate Contact:
+                Top Edge:
+                    Horizontal asperity ratio: 2
+                    Vertical asperity ratio: 2
+                Bottom Edge:
+                    Horizontal asperity ratio: 2
+                    Vertical asperity ratio: 2
         Initial Condition:
             Initial Temperature: 2   
             Input Power Density: 2            
