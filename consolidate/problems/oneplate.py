@@ -1,5 +1,5 @@
 from .domains import RectangularDomain
-from .boundaryconditions import LinearBC
+# from .boundaryconditions import LinearBC
 
 class OnePlate:
 

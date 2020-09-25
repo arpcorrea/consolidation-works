@@ -15,18 +15,21 @@ Domains:
             Number of Elements in X: 10
             Number of Elements in Y: 10
         Boundary Condition:
-            Left Edge:
-                Temperature: 3
-            Top Edge:
-                Temperature: 3
-            Right Edge:
-                Temperature: 3
-            Bottom Edge:
-                Horizontal asperity ratio: 3
-                Vertical asperity ratio: 3
+            External:
+                Temperature: 
+                    Left Edge: 30
+                    Top Edge:  31
+                    Right Edge: 32
+            Internal:
+                Horizontal asperity ratio:
+                    Bottom Edge: 3
+                Vertical asperity ratio: 
+                    Bottom Edge: 3
         Initial Condition:
-            Initial Temperature: 3
-        
+            Initial Temperature: 295
+            Viscosity: 
+                A: 0.00000000000114
+                B: 26300
     Bottom Plate:
         Geometry:
             Thickness (Y): 0.4
@@ -41,18 +44,21 @@ Domains:
             Number of Elements in X: 10
             Number of Elements in Y: 10
         Boundary Condition:
-            Left Edge:
-                Temperature: 1
-            Bottom Edge:
-                Temperature: 1
-            Right Edge:
-                Temperature: 1 
-            Top Edge:
-                Horizontal asperity ratio: 1
-                Vertical asperity ratio: 1
+            External:
+                Temperature:
+                    Left Edge: 10
+                    Bottom Edge: 11
+                    Right Edge: 12
+            Internal:
+                Horizontal asperity ratio: 
+                    Top Edge: 1
+                Vertical asperity ratio:
+                    Top Edge: 1
         Initial Condition: 
-            Initial Temperature: 1
-        
+            Initial Temperature: 290
+            Viscosity: 
+                A: 0.00000000000114
+                B: 26300
     Middle Plate:
         Geometry:
             Thickness (Y): 0.01
@@ -66,17 +72,24 @@ Domains:
         Mesh:
             Number of Elements in X: 10
             Number of Elements in Y: 1
-        Boundary Condition:                
-            Top Edge:
-                Horizontal asperity ratio: 2
-                Vertical asperity ratio: 2
-            Bottom Edge:
-                Horizontal asperity ratio: 2
-                Vertical asperity ratio: 2
+        Boundary Condition:  
+            External:
+                Temperature:
+                    Right Edge: 50
+                    Left Edge: 51
+            Internal:
+                Horizontal asperity ratio: 
+                    Top Edge: 2 
+                    Bottom Edge: 2 
+                Vertical asperity ratio: 
+                    Top Edge: 2 
+                    Bottom Edge: 2
         Initial Condition:
-            Initial Temperature: 2   
-            Input Power Density: 2            
-
+            Initial Temperature: 300
+            Input Power Density: 2
+            Viscosity: 
+                A: 0.00000000000114
+                B: 26300
 Simulation:
     Step Time: 0.1
     Number of Steps: 1000
