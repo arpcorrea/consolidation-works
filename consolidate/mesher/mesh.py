@@ -9,11 +9,7 @@ class Mesh:
             self.set_create_mask(domain, totalNy, totalNx)
 
     def set_mesh_grid(self, domain):
-        self.nx = domain.mesh["Number of Elements in X"]
-        self.ny = domain.mesh["Number of Elements in Y"]
-        self.dx=domain.dimensions["Lx"]/self.nx
-        self.dy=domain.dimensions["Ly"]/self.ny
-        X, Y = np.meshgrid(np.arange(domain.corners["X"][0], domain.corners["X"][1], self.dx), np.arange(domain.corners["Y"][0], domain.corners["Y"][1], + self.dy))
+        X, Y = np.meshgrid(np.arange(domain.corners["X"][0], domain.corners["X"][1], domain.mesh["dx"]), np.arange(domain.corners["Y"][0], domain.corners["Y"][1], domain.mesh["dy"]))
         X=X[0,:].copy()
         Y=Y[:,0].copy()
         self.X = X
