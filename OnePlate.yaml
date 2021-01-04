@@ -1,32 +1,50 @@
 Problem Type:
-    Type: OnePlate
-
-Geometry:
-    Length (X): 10.0
-    Width (Y): 10.0
-    
-Mesh:
-  Plate:
-    Number of Elements in X: 10
-    Number of Elements in Y: 10
-
-Materials:
-    Plate:
-        Thermal Conductivity X: 0.65
-        Thermal Conductivity Y: 0.65
-        Density: 1598
-        Specific Heat Capacity: 930
-
-Boundary Conditions:
-    Top:
-      Models: Heat Transfer
-      Initial Temperature: 293
-    Bottom:
-      Models: Heat Transfer
-      Initial Temperature: 293
-    Left:
-      Models: Heat Transfer
-      Initial Temperature: 293
-    Right:
-      Models: Heat Transfer
-      Initial Temperature: 293
+    Type: Heat Transfer
+    Total Plates: 1
+    Length: 0.1
+Domains:
+    Plate 1:
+        Geometry:
+            y0: 0.004
+            y1: 0.006
+            x0: 0
+            x1: 0.1           
+        Material: 
+            kx: 0.658
+            ky: 0.658
+            Density: 1600
+            Cp: 930     
+            Viscosity: 
+                A: 0.0056
+                Ea: 74400
+        Mesh:
+            Points in X: 100
+            Points in Y: 80
+        Boundary Condition:  
+            Thermal:
+                Convection:
+                    Left Edge: 
+                        Room Temperature: 0
+                        Convection Coefficient: 0
+                    Right Edge:
+                        Room Temperature: 0
+                        Convection Coefficient: 0
+                Fixed Temperature:
+                    Bottom Edge:
+                        Temperature: 0
+                    Top Edge: 
+                        Temperature: 0
+            Mechanical:
+                Intimate Contact:
+                    Top Edge:
+                        Horizontal asperity ratio: 2
+                        Vertical asperity ratio: 2
+                    Bottom Edge:
+                        Horizontal asperity ratio: 2
+                        Vertical asperity ratio: 2
+        Initial Condition:
+            Temperature: 293
+            Power Generation: 200
+Simulation:
+    Step Time: 0.0005
+    Number of Steps: 10000

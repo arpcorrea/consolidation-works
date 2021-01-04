@@ -1,106 +1,110 @@
 Problem Type:
-    Type: TwoPlates
+    Type: Heat Transfer
+    Total Plates: 3
+    Length: 0.001
 Domains:
-    Top Plate:
+    Plate 1:
         Geometry:
-            Thickness (Y): 0.4
-            Width (X): 10.0
-            Pos: 3
-        Material:
-            Thermal Conductivity X: 0.6
-            Thermal Conductivity Y: 0.6
-            Density: 1500
-            Specific Heat: 900
-            Viscosity:
-                A: 0.0056
-                Ea: 74400
-        Mesh:
-            Number of Elements in X: 10
-            Number of Elements in Y: 10
-        Boundary Condition:
-            External:
-                Left Edge: 
-                    Room Temperature: 270
-                    Convection Coefficient: 100
-                Right Edge:
-                    Room Temperature: 271
-                    Convection Coefficient: 101
-                Top Edge:
-                    Room Temperature: 272
-                    Convection Coefficient: 102
-            Internal:
-                Bottom Edge:
-                    Horizontal asperity ratio: 4
-                    Vertical asperity ratio: 4
-        Initial Condition:
-            Temperature: 270
-    Bottom Plate:
-        Geometry:
-            Thickness (Y): 0.4
-            Width (X): 10.0
-            Pos: 1
+            y0: 0
+            y1: 0.004
+            x0: 0
+            x1: 0.1
         Material: 
-            Thermal Conductivity X: 0.7
-            Thermal Conductivity Y: 0.7
-            Density: 1600
-            Specific Heat: 910
+            kx: 1
+            ky: 1
+            Density: 1500
+            Cp: 1000
             Viscosity:
                 A: 0.0056
                 Ea: 74400
         Mesh:
-            Number of Elements in X: 10
-            Number of Elements in Y: 10
+            Points in X: 101
+            Points in Y: 11
         Boundary Condition:
-            External:
-                Left Edge: 
-                    Room Temperature: 280
-                    Convection Coefficient: 110
-                Right Edge:
-                    Room Temperature: 281
-                    Convection Coefficient: 111
-                Bottom Edge:
-                    Room Temperature: 282
-                    Convection Coefficient: 112
-            Internal:
-                Top Edge:                    
-                    Horizontal asperity ratio: 1
-                    Vertical asperity ratio: 1
-        Initial Condition: 
-            Temperature: 280
-    Middle Plate:
+            Thermal:
+                Fixed Boundary:
+                    Bottom Edge:
+                        Temperature: 25
+                    Left Edge:
+                        Temperature: 25
+                    Right Edge:
+                        Temperature: 25
+            Mechanical:
+                Intimate Contact:
+                    Top Edge:
+                        Horizontal asperity ratio: 4
+                        Vertical asperity ratio: 4
+        Initial Condition:
+            Temperature: 30
+    Plate 2:
         Geometry:
-            Thickness (Y): 0.01
-            Width (X): 10.0
-            Pos: 2
-        Material:
-            Thermal Conductivity X: 0.8
-            Thermal Conductivity Y: 0.8
-            Density: 2000
-            Specific Heat: 700        
-            Viscosity: 
+            y0: 0.004
+            y1: 0.006
+            x0: 0
+            x1: 0.1           
+        Material: 
+            kx: 50
+            ky: 27
+            Density: 15000
+            Cp: 1000
+            Viscosity:
                 A: 0.0056
                 Ea: 74400
         Mesh:
-            Number of Elements in X: 10
-            Number of Elements in Y: 1
+            Points in X: 101
+            Points in Y: 6
         Boundary Condition:  
-            External:
-                Left Edge: 
-                    Room Temperature: 300
-                    Convection Coefficient: 120
-                Right Edge:
-                    Room Temperature: 301
-                    Convection Coefficient: 121
-            Internal:
-                Top Edge:
-                    Horizontal asperity ratio: 2
-                    Vertical asperity ratio: 2
-                Bottom Edge:
-                    Horizontal asperity ratio: 2
-                    Vertical asperity ratio: 2
+            Thermal:
+                Fixed Boundary:
+                    Left Edge: 
+                        Temperature: 25
+                    Right Edge:
+                        Temperature: 25
+            Mechanical:
+                Intimate Contact:
+                    Top Edge:
+                        Horizontal asperity ratio: 2
+                        Vertical asperity ratio: 2
+                    Bottom Edge:
+                        Horizontal asperity ratio: 2
+                        Vertical asperity ratio: 2
         Initial Condition:
-            Temperature: 450
-            Input Power Density: 2
+            Temperature: 700
+            Power Input:
+                Inner: 1000 
+    Plate 3:
+        Geometry:
+            y0: 0.006
+            y1: 0.010
+            x0: 0
+            x1: 0.1
+        Material: 
+            kx: 1
+            ky: 1
+            Density: 1500
+            Cp: 1000
+            Viscosity:
+                A: 0.0056
+                Ea: 74400
+        Mesh:
+            Points in X: 101
+            Points in Y: 11
+        Boundary Condition:
+            Thermal:
+                Fixed Boundary:
+                    Right Edge:
+                        Temperature: 25
+                    Top Edge:
+                        Temperature: 25
+                    Left Edge:
+                        Temperature: 25
+            Mechanical:
+                Intimate Contact:
+                    Bottom Edge:                    
+                        Horizontal asperity ratio: 1
+                        Vertical asperity ratio: 1
+        Initial Condition: 
+            Temperature: 30
 Simulation:
-    Step Time: 0.1
-    Number of Steps: 1000
+    Step Time: 0.01
+    Number of Steps: 2000

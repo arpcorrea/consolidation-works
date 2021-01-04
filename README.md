@@ -1,59 +1,135 @@
 # The problem
 
+This code solves a 2D transiet heat transfer problem with or without material interface between different domains. 
 
-A plate with dimensions X and Y are defined by the user in ["Geometry"]["Length X"]["Length Y"]
 
-The plate, made of orthotropic, material is heated on the left boundary with a constant heat Q, defined by the user in ["Boundary Conditions"]["Power"]. We assumed that this material is aluminium"
+3 different plates with dimesions Xi and Yi are defined by the user in ["Domains"]["Plate i"]["Geometry"]["Y0"], ["Domains"]["Plate i"]["Geometry"]["X0"], ["Domains"]["Plate i"]["Geometry"]["Y1"], ["Domains"]["Plate i"]["Geometry"]["X1"] in which "i" is the plate number and [Y0, Y1] is initial and final Y location and  [X0, X1] are initial and final X location.
 
-The plate's initial temperature is defined by the user in ["Materials"]["Aluminium"]["Initial Temperature"]. Other material properties are also defined in ["Materials"]["Aluminium"].
+Each domain is orthotropic, i.e thermal conductivity in X and Y are set independently under ["Domains"]["Plate i"]["Material"]["Kx"] and ["Domains"]["Plate i"]["Material"]["Ky"]. It is important to notice that each plate can have its own properties, meaning that it supports discontinuities between domains. Since it is a transient problem, material density and heat capacity are set in ["Domains"]["Plate i"]["Material"]["rho"] and ["Domains"]["Plate i"]["Material"]["Cp"] respectively. 
 
-The plate is inside a room, with a constant temperature is set by the user in ["Boundary Conditions"]["Room Temperature"].
+In case of domains with distinct materials into contact, zero thermal contact resistance or infinite thermal contact impedance is considered, i.e perfect thermal interface contact.
 
-The user also define the number of elements in X and Y in ["simulation"]["Number of Elements X"] and ["simulation"]["Number of Elements Y"] respectivelly.
+Each domain has its own initial temperature, set in ["Domains"]["Plate i"]["Initial Condition"]["Temperature"].
+
+The user also define the number of points in X and Y of each domain in ["Domains"]["Plate i"]["Mesh"]["Points in X"] and ["Domains"]["Plate i"]["Mesh"]["Points in Y"] respectivelly.
 
 The number of steps and step time are defined in ["simulation"]["Step Time"] and ["simulation"]["Number Time Steps"] respectivelly. Notice that large step time may not converge and an error message will popup.
 
-Finally, the code generates Temperature plots at every interval, defined in ["Plot"]["plot interval"].
+
 
 
 
 ```yaml
 Problem Type:
-    Type: Aluminium
-    
-Geometry:
-    Length X: 0.2
-    Length Y: 0.2
- 
-Materials:
-  Aluminium:
-    Thermal Conductivity X: 237
-    Thermal Conductivity Y: 237
-    Density: 2700
-    Cp: 1000
-    Initial Temperature: 333.
-    
-Boundary Conditions:
-    Room Temperature: 293
-    Power: 500000
-    convection coefficient: 25
-    
-
+    Type: Heat Transfer
+    Total Plates: 3
+    Length: 0.001
+Domains:
+    Plate 1:
+        Geometry:
+            y0: 0
+            y1: 0.004
+            x0: 0
+            x1: 0.1
+        Material: 
+            kx: 1
+            ky: 1
+            Density: 1500
+            Cp: 1000
+            Viscosity:
+                A: 0.0056
+                Ea: 74400
+        Mesh:
+            Points in X: 101
+            Points in Y: 11
+        Boundary Condition:
+            Thermal:
+                Fixed Boundary:
+                    Bottom Edge:
+                        Temperature: 25
+                    Left Edge:
+                        Temperature: 25
+                    Right Edge:
+                        Temperature: 25
+            Mechanical:
+                Intimate Contact:
+                    Top Edge:
+                        Horizontal asperity ratio: 4
+                        Vertical asperity ratio: 4
+        Initial Condition:
+            Temperature: 30
+    Plate 2:
+        Geometry:
+            y0: 0.004
+            y1: 0.006
+            x0: 0
+            x1: 0.1           
+        Material: 
+            kx: 50
+            ky: 27
+            Density: 15000
+            Cp: 1000
+            Viscosity:
+                A: 0.0056
+                Ea: 74400
+        Mesh:
+            Points in X: 101
+            Points in Y: 6
+        Boundary Condition:  
+            Thermal:
+                Fixed Boundary:
+                    Left Edge: 
+                        Temperature: 25
+                    Right Edge:
+                        Temperature: 25
+            Mechanical:
+                Intimate Contact:
+                    Top Edge:
+                        Horizontal asperity ratio: 2
+                        Vertical asperity ratio: 2
+                    Bottom Edge:
+                        Horizontal asperity ratio: 2
+                        Vertical asperity ratio: 2
+        Initial Condition:
+            Temperature: 700
+            Power Input:
+                Inner: 1000 
+    Plate 3:
+        Geometry:
+            y0: 0.006
+            y1: 0.010
+            x0: 0
+            x1: 0.1
+        Material: 
+            kx: 1
+            ky: 1
+            Density: 1500
+            Cp: 1000
+            Viscosity:
+                A: 0.0056
+                Ea: 74400
+        Mesh:
+            Points in X: 101
+            Points in Y: 11
+        Boundary Condition:
+            Thermal:
+                Fixed Boundary:
+                    Right Edge:
+                        Temperature: 25
+                    Top Edge:
+                        Temperature: 25
+                    Left Edge:
+                        Temperature: 25
+            Mechanical:
+                Intimate Contact:
+                    Bottom Edge:                    
+                        Horizontal asperity ratio: 1
+                        Vertical asperity ratio: 1
+        Initial Condition: 
+            Temperature: 30
 Simulation:
-  Time Step: 0.01
-  Number Time Steps: 10001
-  Number of Elements X: 100 
-  Number of Elements Y: 100
-
-Plot:
-  Temp Output Folder: "./output/Temperature/"
-  figure temperature name: Temperature
-  Color Interpolation: 50
-  Color Map: "inferno"
-  plot interval: 500
-  
-Animation:
-    name: temperature
+    Step Time: 0.01
+    Number of Steps: 2000
 
 ```
 
@@ -61,13 +137,13 @@ Animation:
 # Getting Started
 
 
-### Geomtry
-A class named "Geometry" is difined only to store the X and Y dimensions of the problem.
+### Deck
+A class named "Deck" is created to read the information of the .yaml (shown above).
+### Problem
+A class named "TwoPlates" is defined to organize the data and assign values in local fields. .
 ### Mesh
-A class named "Plate" is defined to create the mesh and assign Initial Temperature, Thermal Diffusivity in X and Thermal Diffusivity in Y in each element.
-### Model
+A class named "Masher" is used to assemble each local field into a master fields. 
+### Heat Transfer Model
 A class named "Heat Transfer" solves the heat transfer problem by central differences.
-### Plot and Animation
-A class named "PlotsTwoPlates" is defined to generate figures of the thermal history in spaced intervals. In the end, a .GIF is created from those figures.
 ### Solver
-A class named "SolvesTwoPlates" is defined to create a forward step analysis, solving the heat transfer model and plotting the figures when convenient.
+A class named "SolvesTwoPlates" is defined to create a forward step analysis, solving the heat transfer model.

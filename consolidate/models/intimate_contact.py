@@ -9,12 +9,12 @@ import numpy as np
 
 class IntimateContact():
     
-    def __init__(self, meshes,deck):
-            self.meshes=meshes
-            self.deck=deck
-            self.P = (float(self.deck.doc["Processing Parameters"]["Pressure"]))
-            self.init_parameter()
-            self.calculate_average_dic()
+    def __init__(self, mesh):
+        self.meshes=meshes
+        self.deck=deck
+        self.P = (float(self.deck.doc["Processing Parameters"]["Pressure"]))
+        self.init_parameter()
+        self.calculate_average_dic()
             
             
 # -------------- BEGIN VISCOSITY CALCULATION ----------            
