@@ -17,11 +17,11 @@ class ViscosityCalculation:
                     aux=[]
                     for param in domain.material[prop]:
                         aux.append(domain.material[prop][param])
-            a= a + aux[0]*domain.mask["Inner"]
-            ea = ea + aux[1]*domain.mask["Inner"]
+            a= a + aux[0]*domain.mask_inter_nodes["Inner"]
+            ea = ea + aux[1]*domain.mask_inter_nodes["Inner"]
         self.a = a
         self.ea= ea
                 
-    def do_timestep(self,uu,temp):
+    def do_timestep_viscosity(self,uu,temp):
         uu = self.a*np.exp(self.ea/temp)
         return uu

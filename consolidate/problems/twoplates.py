@@ -30,7 +30,7 @@ class TwoPlates:
         if deck.doc["Problem Type"]["Type"] == "Welding":
             self.required_fields=["Temperature", "kx", "ky", "Density", "Cp",  "Power Input Heat", "Intimate Contact", "dx","dy","Convection Coefficient", "Interface Temperature"]
         if deck.doc["Problem Type"]["Type"] == "Heat Transfer":
-            self.required_fields=["Temperature", "kx", "ky", "Density", "Cp", "Power Input Heat", "dx","dy", "Convection Coefficient", "Interface Temperature"]
+            self.required_fields=["Temperature", "kx", "ky", "Density", "Cp", "Power Input Heat", "dx","dy", "Convection Coefficient", "Interface Temperature", "Viscosity"]
 
 
     def set_problem_parameters(self, deck):
@@ -215,7 +215,15 @@ class TwoPlates:
                         value = domain.material[field_name] * domain.mask_inter_nodes["Inner"]
                         # else:
                         #     value = domain.material[field_name] * domain.mask["All"]
-                        domain.set_field(field_name, value)
+                        # domain.set_field(field_name, value)
+                    else:
+                        if field_name == "Viscosity":
+                            value ={}
+                            for var in domain.material[field_name].keys():
+                                value.update({var: domain.material[field_name][var]*domain.mask_inter_nodes["Inner"] })
+                                
+                    domain.set_field(field_name, value)
+                            # import pdb; pdb.set_trace()
                     
                     
                 elif field_name == "Power Input Heat":
