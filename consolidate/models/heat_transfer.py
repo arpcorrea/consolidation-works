@@ -18,30 +18,41 @@ class HeatTransfer:
         self.Q = fields["Power Input Heat"]
         self.h = fields ["Convection Coefficient"]
         self.Text = fields["Interface Temperature"]
-        self.calc_diffusivity()
+        self.calc_diffusivity(self.kx, self.ky, self.rho, self.cp)
+        self.calc_w(self.diffx, self.diffy, self.dx2, self.dy2)
+        self.calc_disc(self.ky)
+        
         
         
 
-    def calc_diffusivity(self):
-        self.diffy = self.ky/(self.rho*self.cp)
-        self.diffx = self.kx/(self.rho*self.cp)
-        self.wy = self.diffy/self.dy2
-        self.wx = self.diffx/self.dx2
-        
+    def calc_diffusivity(self, kx, ky, rho, cp):
+        self.diffy = np.zeros(np.shape(ky))
+        self.diffx = np.zeros(np.shape(kx))
+        self.diffy[1:-1, 1:-1] = ky[1:-1, 1:-1]/(rho[1:-1, 1:-1]*cp[1:-1, 1:-1])
+        self.diffx[1:-1, 1:-1] = kx[1:-1, 1:-1]/(rho[1:-1, 1:-1]*cp[1:-1, 1:-1])
+
+    def calc_w(self, diffx,diffy,dx2,dy2):
+        self.wx = np.zeros(np.shape(diffx))
+        self.wy = np.zeros(np.shape(diffx))
+        self.wy[1:-1, 1:-1] = diffy[1:-1, 1:-1]/dy2[1:-1, 1:-1]
+        self.wx[1:-1, 1:-1] = diffx[1:-1, 1:-1]/dx2[1:-1, 1:-1]
+
+
+    def calc_disc(self, ky):
         k=[]
         disc=[]
-        for i in range (1, np.shape(self.ky)[0]-2):
-            if self.ky[i, 1] != self.ky[i+1, 1]:
-                k.append( self.ky[i,1]/self.ky[i+1, 1])
+        for i in range (1, np.shape(ky)[0]-2):
+            if self.ky[i, 1] != ky[i+1, 1]:
+                k.append( self.ky[i,1]/ky[i+1, 1])
                 disc.append(i)
-                
+
+        gamma =[]
+        for i in range (0, np.size(disc)):
+            gamma.append((k[i]-1)/(k[i]+1))
+
+        self.gamma = gamma
         self.disc = disc
         self.k = k
-        
-        gamma =[]
-        for i in range (0, np.size(self.disc)):
-            gamma.append((self.k[i]-1)/(self.k[i]+1))
-        self.gamma = gamma
 
 
     def do_timestep_cond_conv(self, uu,uuold, uunodes):
