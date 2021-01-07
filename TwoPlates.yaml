@@ -9,11 +9,12 @@ Domains:
             y1: 0.004
             x0: 0
             x1: 0.1
-        Material: 
-            kx: 0.658
-            ky: 0.658
-            Density: 1600
-            Cp: 930
+        Material Properties: 
+            Density: 1600            
+            Thermal:
+                kx: 0.658
+                ky: 0.658
+                Cp: 930
             Viscosity:
                 Tg: 300
                 A: 0.0056
@@ -43,11 +44,12 @@ Domains:
             y1: 0.006
             x0: 0
             x1: 0.1           
-        Material: 
-            kx: 27.54
-            ky: 27.54
+        Material Properties:
             Density: 7875
-            Cp: 515
+            Thermal:
+                kx: 27.54
+                ky: 27.54
+                Cp: 515
             Viscosity:
                 Tg: 300
                 A: 0.0056
@@ -80,11 +82,12 @@ Domains:
             y1: 0.010
             x0: 0
             x1: 0.1
-        Material: 
-            kx: 0.658
-            ky: 0.658
-            Density: 1600
-            Cp: 930
+        Material Properties:
+            Density: 1600           
+            Thermal:
+                kx: 0.658
+                ky: 0.658
+                Cp: 930
             Viscosity:
                 Tg: 300
                 A: 0.0056

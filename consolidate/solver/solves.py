@@ -23,7 +23,7 @@ class SolvesTwoPlates:
         
         for m in range(int(problem.SimulationParameters["Number of Steps"])):
 
-                self.Tnew, self.Tnodes = model_HT.do_timestep_cond_conv( self.Tnew.copy(), Told.copy(), self.Tnodes.copy())
+                self.Tnew, self.Tnodes = model_HT.do_timestep_cond_conv( self.Tnew.copy(), Told.copy())
                 Told = self.Tnew.copy()
 
             # self.dir_Visc.value = model_visc.do_timestep(self.dir_Visc.value, self.dir_T.value)

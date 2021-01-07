@@ -30,7 +30,7 @@ class TwoPlates:
         if deck.doc["Problem Type"]["Type"] == "Welding":
             self.required_fields=["Temperature", "kx", "ky", "Density", "Cp",  "Power Input Heat", "Intimate Contact", "dx","dy","Convection Coefficient", "Interface Temperature"]
         if deck.doc["Problem Type"]["Type"] == "Heat Transfer":
-            self.required_fields=["Temperature", "kx", "ky", "Density", "Cp", "Power Input Heat", "dx","dy", "Convection Coefficient", "Interface Temperature", "Viscosity"]
+            self.required_fields=["Temperature", "Thermal", "Density", "Power Input Heat", "increments", "Convection Coefficient", "Interface Temperature", "Viscosity"]
 
 
     def set_problem_parameters(self, deck):
@@ -90,15 +90,14 @@ class TwoPlates:
                 count=count+1
             nodes=[[p_x0,p_x1],[p_y0, p_y1]]
 
-
             material={}
-            for param in domain_dir["Material"]:
-                if isinstance(domain_dir["Material"][param], str):
-                    material[param] = float(domain_dir["Material"][param])
+            for param in domain_dir["Material Properties"]:
+                if isinstance(domain_dir["Material Properties"][param], str):
+                    material[param] = float(domain_dir["Material Properties"][param])
                 else:
                     material[param]={}
-                    for aux in domain_dir["Material"][param]:
-                        material[param].update({aux: float(domain_dir["Material"][param][aux])})
+                    for aux in domain_dir["Material Properties"][param]:
+                        material[param].update({aux: float(domain_dir["Material Properties"][param][aux])})
 
             power = {}
             for cond_name in domain_dir["Initial Condition"]:
@@ -118,11 +117,12 @@ class TwoPlates:
     def set_material(self, deck):
         for domain in self.domains:
             material ={}
-            domain_dir = deck.doc["Domains"][domain.name]["Material"]
+            domain_dir = deck.doc["Domains"][domain.name]["Material Properties"]
             for param in domain_dir:
                 if isinstance(domain_dir[param], str):
                     material[param] = float(domain_dir[param])
                 else:
+                    # import pdb; pdb.set_trace()
                     material[param]={}
                     for aux in domain_dir[param]:
                         material[param].update({aux: float(domain_dir[param][aux])})
@@ -165,13 +165,21 @@ class TwoPlates:
         for domain in self.domains:
             for field_name in self.required_fields:
                 value=0
+                value_dict ={}
                 extTemp=0
-                if field_name == "dx":
+                if field_name == "increments":
                     deltaX = domain.dimensions[0][1] - domain.dimensions[0][0]
                     incX = deltaX/(domain.nodes[0][1] - domain.nodes[0][0])
-                    value = incX*domain.mask_inter_nodes["Inner"]
-                    domain.set_field(field_name, value)
+                    valueX = incX*domain.mask_inter_nodes["Inner"]
+                    value_dict["dx"] = valueX
+
+                    deltaY = domain.dimensions[1][1] - domain.dimensions[1][0]
+                    incY = deltaY/(domain.nodes[1][1] - domain.nodes[1][0])
+                    valueY = incY*domain.mask_inter_nodes["Inner"]
+                    value_dict["dy"] = valueY
                     
+                    domain.set_field(field_name, value_dict)
+
 
                 elif field_name == "dy":
                     deltaY = domain.dimensions[1][1] - domain.dimensions[1][0]
@@ -179,9 +187,6 @@ class TwoPlates:
                     value = incY*domain.mask_inter_nodes["Inner"]
                     domain.set_field(field_name, value)
                     
-                # elif field_name == "Temperature":
-                #     value = domain.initial_condition["Temperature"]*domain.mask_nodes["Inner"]
-                #     h=np.zeros((self.totalnodes[1], self.totalnodes[0]))
 
 
                 elif field_name == "Temperature":
@@ -211,21 +216,14 @@ class TwoPlates:
                     
                 elif field_name in domain.material:
                     if isinstance(domain.material[field_name], float):
-                        # if domain.nodes[1][0] == 0 or domain.nodes[1][1] == problem.totalnodes[1]-1:
                         value = domain.material[field_name] * domain.mask_inter_nodes["Inner"]
-                        # else:
-                        #     value = domain.material[field_name] * domain.mask["All"]
-                        # domain.set_field(field_name, value)
                     else:
-                        if field_name == "Viscosity":
-                            value ={}
-                            for var in domain.material[field_name].keys():
-                                value.update({var: domain.material[field_name][var]*domain.mask_inter_nodes["Inner"] })
-                                
+                        value ={}
+                        for var in domain.material[field_name].keys():
+                            value.update({var: domain.material[field_name][var]*domain.mask_inter_nodes["Inner"] })
                     domain.set_field(field_name, value)
-                            # import pdb; pdb.set_trace()
-                    
-                    
+
+
                 elif field_name == "Power Input Heat":
                     value = np.zeros((self.totalnodes[1]+1, self.totalnodes[0]+1))
                     if bool(domain.power):

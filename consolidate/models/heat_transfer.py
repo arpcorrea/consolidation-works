@@ -6,24 +6,32 @@ class HeatTransfer:
         fields ={}
         for aux in mesh.fields:
             fields[aux.name]= aux.value
+            # import pdb; pdb.set_trace()
+            
+        self.dx = fields["increments"]["dx"]
+        self.dy = fields["increments"]["dy"]
+        self.dx2 = self.dx*self.dx
+        self.dy2 = self.dy*self.dy
+        
         self.dt = float(problem.SimulationParameters["Step Time"])
-        self.dx = fields["dx"]
-        self.dy = fields["dy"]
-        self.dx2 = fields["dx"] * fields["dx"]
-        self.dy2 = fields["dy"] * fields["dy"]
+
         self.rho = fields["Density"]
-        self.cp = fields["Cp"]
-        self.kx = fields["kx"]
-        self.ky = fields["ky"]
+        self.cp = fields["Thermal"]["Cp"]
+        self.kx = fields["Thermal"]["kx"]
+        self.ky = fields["Thermal"]["ky"]
+        
+        self.A = fields["Viscosity"]["A"]
+        self.Ea = fields["Viscosity"]["Ea"]
+        self.Tg = fields["Viscosity"]["Tg"]
+        
         self.Q = fields["Power Input Heat"]
         self.h = fields ["Convection Coefficient"]
         self.Text = fields["Interface Temperature"]
+
         self.calc_diffusivity(self.kx, self.ky, self.rho, self.cp)
         self.calc_w(self.diffx, self.diffy, self.dx2, self.dy2)
         self.calc_disc(self.ky)
-        
-        
-        
+
 
     def calc_diffusivity(self, kx, ky, rho, cp):
         self.diffy = np.zeros(np.shape(ky))
@@ -55,33 +63,14 @@ class HeatTransfer:
         self.k = k
 
 
-    def do_timestep_cond_conv(self, uu,uuold, uunodes):
-        
-        # ---------------------------------------------------------------------------------------------------------
-        # -- ORDER 1 SOLVER --
-        # import pdb; pdb.set_trace()
-        
-        # dU/dy = (uuold[2:,1:-1] - uuold[0:-2,1:-1]])/deltaY
-        
-
-        
+    def do_timestep_cond_conv(self, uu,uuold):
 
         
         uu[0,1:-1] = 2*self.Text[0,1:-1] - uuold[1,1:-1]
         uu[-1,1:-1] = 2*self.Text[-1,1:-1] - uuold[-2,1:-1]
         uu[1:-1,0] = 2*self.Text[1:-1,0] - uuold[1:-1,1]
         uu[1:-1,-1] = 2*self.Text[1:-1,-1] - uuold[1:-1,-2]
-        # import pdb; pdb.set_trace()
-        
-        # uu[-1,1:-1] = uu[-1,1:-1] - 2*self.dy[1,1:-1]*self.h[-1,1:-1]*(uu[-1,1:-1] - uu[-2,1:-1])/self.ky[-2,1:-1]
-        # uu[1:-1,0] = uu[1:-1,0] - 2*self.dx[:-1,1]*self.h[1:-1,0]*(uu[1:-1,0] - uu[1:-1,1])/self.kx[1:-1,1] 
-        # uu[1:-1,-1] = uu[1:-1,-1] - 2*self.dx[:-1,-2]*self.h[1:-1,-1]*(uu[1:-1,-1] - uu[1:-1,-2])/self.kx[1:-1,-2]
-        
 
-        
-        # uu[1:-1, 1:-1] = uuold[1:-1, 1:-1] + self.dt*((self.diffy[1:-1, 1:-1])/self.dy2[1:, :-1])*(uuold[2:, 1:-1]-uuold[1:-1, 1:-1]) - self.dt*((self.diffy[1:-1, 1:-1])/self.dy2[:-1, :-1])*(uuold[1:-1, 1:-1]-uuold[:-2, 1:-1]) + self.dt*((self.diffx[1:-1, 1:-1])/self.dx2[1:, :-1])*(uuold[1:-1, 2:]-uuold[1:-1, 1:-1]) - self.dt*((self.diffx[1:-1, 1:-1])/self.dx2[:-1, :-1])*(uuold[1:-1, 1:-1]-uuold[1:-1, :-2])
-        # in Y only
-        # import pdb; pdb.set_trace()
 
         if not self.disc:
             uu[1:-1, 1:-1] = uuold[1:-1, 1:-1] + self.dt*(self.wy[1:-1, 1:-1])*(uuold[2:, 1:-1]-2*uuold[1:-1, 1:-1] + uuold[:-2,1:-1]) + self.dt*(self.wx[1:-1, 1:-1])*(uuold[1:-1, 2:]-2*uuold[1:-1, 1:-1] + uuold[1:-1, :-2])
@@ -99,8 +88,8 @@ class HeatTransfer:
                 else:
                     uu[self.disc[i-1]+2: self.disc[i], 1:-1] = uuold[self.disc[i-1]+2: self.disc[i], 1:-1] + self.dt * self.wy[self.disc[i-1]+2: self.disc[i], 1:-1] * (uuold[self.disc[i-1]+3: self.disc[i]+1, 1:-1] - 2*uuold[self.disc[i-1]+2: self.disc[i], 1:-1] + uuold[self.disc[i-1]+1: self.disc[i]-1, 1:-1]) + self.dt*(self.wx[self.disc[i-1]+2: self.disc[i], 1:-1])*(uuold[self.disc[i-1]+2: self.disc[i], 2:]-2*uuold[self.disc[i-1]+2: self.disc[i], 1:-1] + uuold[self.disc[i-1]+2: self.disc[i], :-2])
 
-        
-        
+
+        uunodes = np.zeros((np.shape(uu)[0]-1, np.shape(uu)[1]-1))
         uunodes[:,:] = (uu[:-1, :-1] + uu[1:, 1:]+ uu[1:, :-1] + uu[:-1, 1:])/4
         uunodes[0,0] = (uunodes[0,1]+uunodes[1,0])/2
         uunodes[-1,-1] = (uunodes[-1,-2]+uunodes[-2,-1])/2
@@ -109,7 +98,8 @@ class HeatTransfer:
 
         return uu,uunodes
 
-
+    def do_timestep_viscosity(self, uu):
+        print("do something here")
 
 
 

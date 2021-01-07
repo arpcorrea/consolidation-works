@@ -21,7 +21,7 @@ class ViscosityCalculation:
             ea = ea + aux[1]*domain.mask_inter_nodes["Inner"]
         self.a = a
         self.ea= ea
-                
+
     def do_timestep_viscosity(self,uu,temp):
         uu = self.a*np.exp(self.ea/temp)
         return uu
